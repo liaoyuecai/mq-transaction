@@ -6,7 +6,7 @@ import java.util.UUID;
 class TransactionMessage<T> implements Serializable{
     String id = UUID.randomUUID().toString();
     String queue;
-    String remark;
+    String name;
     String operation;
     String params;
     int status = 0;
@@ -17,19 +17,23 @@ class TransactionMessage<T> implements Serializable{
         this.params = params;
     }
 
-    TransactionMessage(String queue, String remark, String operation, String params) {
+    TransactionMessage(String queue, String name, String operation, String params) {
         this.queue = queue;
-        this.remark = remark;
+        this.name = name;
         this.operation = operation;
         this.params = params;
     }
 
     void success(){
-        status = 1;
+        status = Transaction.SUCCESS;
     }
 
     void fail(){
-        status = 2;
+        status = Transaction.FAIL;
+    }
+
+    void excute(){
+        status = Transaction.EXECUTING;
     }
 
 }
