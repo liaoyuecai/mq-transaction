@@ -1,21 +1,26 @@
 package org.liaoyuecai.transaction;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class Transaction {
+    static final int NON_EXECUTION = 0;
+    static final int EXECUTING = 1;
+    static final int SUCCESS = 2;
+    static final int FAIL = 3;
+    String id = UUID.randomUUID().toString();
     List<TransactionMessage> execute = new ArrayList();
-    int status = 0;
+    int status = NON_EXECUTION;
+    String name;
+
+    public Transaction(String name) {
+        this.name = name;
+    }
+
     public Transaction addOperation(String queue, String operation, Object params) {
         execute.add(new TransactionMessage(queue, operation, JSON.toJSONString(params)));
         return this;
     }
 
-    public Transaction addOperation(String queue, String operation, Object params, String remark) {
-        execute.add(new TransactionMessage(queue, remark, operation, JSON.toJSONString(params)));
+    public Transaction addOperation(String queue, String operation, Object params, String name) {
+        execute.add(new TransactionMessage(queue, name, operation, JSON.toJSONString(params)));
         return this;
     }
 
@@ -31,10 +36,11 @@ public class Transaction {
         execute.get(0).success();
         execute.remove(0);
         if (execute.isEmpty())
-            status = 1;
+            status = SUCCESS;
     }
 
     void defeated(){
         execute.get(0).fail();
+        status = FAIL;
     }
 }
