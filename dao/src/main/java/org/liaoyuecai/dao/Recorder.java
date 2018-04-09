@@ -1,18 +1,25 @@
+package org.liaoyuecai.dao;
+
+import org.liaoyuecai.transaction.Transaction;
+import org.liaoyuecai.transaction.TransactionOperation;
+
 import java.util.List;
 
 public abstract class Recorder {
 
-    final static String TRANSACTION_TABLE = "mq_transaction";
-    final static String TRANSACTION_OPERATION_TABLE = "mq_transaction_operation";
-    final static String TRANSACTION_FAIL_TABLE = "mq_transaction_fail";
+    public final static String TRANSACTION_TABLE = "mq_transaction";
+    public final static String TRANSACTION_OPERATION_TABLE = "mq_transaction_operation";
+    public final static String TRANSACTION_FAIL_TABLE = "mq_transaction_fail";
 
-    abstract void transactionLog(Transaction transaction);
+    public abstract void transactionLog(Transaction transaction);
 
-    abstract void operationLog(TransactionMessage message);
+    public abstract void updateOperationStatus(TransactionOperation operation);
 
-    abstract void updateOperationStatus(TransactionMessage message);
+    public abstract void transactionFail(String transactionId,Exception e);
 
-    abstract void updateTransactionStatus(TransactionMessage message);
+    public abstract void updateTransactionStatus(Transaction transaction);
 
-    abstract List<Transaction> getUnfinishedTransaction();
+    public abstract List<Transaction> getUnfinishedTransaction();
+
+    public abstract List<Transaction> getFailTransaction();
 }
